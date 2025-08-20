@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BP Guardian – AI-Powered Blood Pressure Monitoring</title>
+    
+    <!-- CSS Styles -->
+    <style>
+        /* --- Base & Typography --- */
+        :root {
+            --bg-color: #f4f7f9;
+            --text-color: #333;
+            --primary-gradient: linear-gradient(135deg, #00b4db, #0083b0);
+            --secondary-gradient: linear-gradient(135deg, #2ddc84, #1aa25c);
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 2.8rem; }
+        h2 { font-size: 2.2rem; }
+        h3 { font-size: 1.5rem; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        /* --- Animated Background --- */
+        #home {
+            position: relative;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Header & Navigation --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .navbar.scrolled .logo,
+        .navbar.scrolled .nav-links a {
+            color: var(--text-color);
+        }
+        
+        #home .logo,
+        #home .nav-links a {
+             color: white;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        
+        .nav-links a.active::after,
+        .nav-links a:hover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-gradient);
+        }
+        
+        #home .nav-links a.active::after,
+        #home .nav-links a:hover::after {
+            background: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .menu-toggle .bar {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px 0;
+            transition: 0.4s;
+        }
+        
+        .navbar.scrolled .menu-toggle .bar {
+            background-color: var(--text-color);
+        }
+
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-content {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .hero h1 {
+            animation: slideInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 20px auto 30px;
+            animation: slideInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--secondary-gradient);
+            color: white;
+            animation: slideInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Features Section --- */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card h3 {
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Interactive Demo & Trend Visualization --- */
+        #demo {
+            background: var(--card-bg);
+        }
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 50px;
+            align-items: flex-start;
+        }
+
+        .form-container, .results-container {
+            background: var(--bg-color);
+            padding: 40px;
+            border-radius: var(--border-radius);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+          10%, 90% { transform: translate3d(-1px, 0, 0); }
+          20%, 80% { transform: translate3d(2px, 0, 0); }
+          30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+          40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+        
+        .result-card h3 {
+            margin-bottom: 10px;
+        }
+        
+        .result-category {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .result-details {
+            font-size: 1.1rem;
+        }
+        
+        .smart-alert {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #fff3cd;
+            color: #856404;
+            display: none;
+        }
+
+        #bpChart {
+            width: 100%;
+            height: 300px;
+            margin-top: 30px;
+        }
+        
+        /* --- Footer --- */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        footer p {
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        /* --- Subpages --- */
+        .page {
+            display: none; /* Hide all pages by default */
+        }
+        
+        .page.active {
+            display: block; /* Show active page */
+            animation: fadeIn 0.5s;
+        }
+        
+        /* Insights Page */
+        .accordion-item {
+            background: var(--card-bg);
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .accordion-header {
+            padding: 20px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding: 0 30px;
+        }
+        
+        .accordion-content p {
+            padding-bottom: 20px;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 500px; /* Adjust as needed */
+            padding: 0 30px;
+        }
+        
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .accordion-item.active .accordion-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Reports Page */
+        .reports-table-container {
+            overflow-x: auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        
+        .reports-table th, .reports-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .reports-table th {
+            background: var(--bg-color);
+            font-weight: 600;
+        }
+        
+        .reports-actions {
+            margin-top: 30px;
+            text-align: right;
+        }
+        
+        .btn-secondary {
+            background: #e74c3c;
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #c0392b;
+        }
+
+        /* About Page */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: var(--primary-gradient);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: white;
+            border: 4px solid #00b4db;
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .timeline-left {
+            left: 0;
+            text-align: right;
+        }
+        
+        .timeline-right {
+            left: 50%;
+        }
+        
+        .timeline-right::after {
+            left: -10px;
+        }
+        
+        .timeline-content {
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        /* --- Modal for confirmation --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        .modal-buttons {
+            margin-top: 30px;
+        }
+        
+        .btn-cancel {
+            background: #bdc3c7;
+            color: var(--text-color);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.8rem; }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: white;
+                flex-direction: column;
+                padding-top: 100px;
+                text-align: center;
+                transition: right 0.5s ease-in-out;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 20px 0;
+            }
+            
+            .nav-links a {
+                color: var(--text-color) !important;
+            }
+            
+            .nav-links a.active::after,
+            .nav-links a:hover::after {
+                background: var(--primary-gradient);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+            
+            .menu-toggle.active .bar:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+            .menu-toggle.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            .menu-toggle.active .bar:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::after {
+                left: 10px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 40px;
+                padding-right: 0;
+                text-align: left !important;
+            }
+            
+            .timeline-left::after, .timeline-right::after {
+                left: 1px;
+            }
+            
+            .timeline-right {
+                left: 0%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="navbar" id="navbar">
+        <div class="container">
+            <a href="#home" class="logo page-link">BP Guardian</a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home" class="page-link active">Home</a></li>
+                <li><a href="#features" class="page-link">Features</a></li>
+                <li><a href="#insights" class="page-link">Insights</a></li>
+                <li><a href="#reports" class="page-link">Reports</a></li>
+                <li><a href="#about" class="page-link">About</a></li>
+            </ul>
+            <div class="menu-toggle" id="menu-toggle">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Homepage Content -->
+        <div id="homepage-content" class="page active">
+            <!-- Hero Section -->
+            <section id="home" class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>Track Smarter. Live Healthier.</h1>
+                        <p>AI-powered blood pressure monitoring and trend detection for proactive healthcare.</p>
+                        <a href="#demo" class="btn btn-primary">Start Monitoring</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Your Personal Health Guardian</h2>
+                        <p>Leveraging smart analysis to provide clear insights into your cardiovascular health.</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">&#128170;</div>
+                            <h3>Risk Prediction</h3>
+                            <p>Instantly convert raw blood pressure numbers into clear, understandable categories: Low, Normal, Elevated, High, or Crisis.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">&#128200;</div>
+                            <h3>Trend Detection</h3>
+                            <p>Automatically track multiple readings over time to visualize trends, calculate averages, and identify patterns in your health data.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">&#128276;</div>
+                            <h3>Smart Alerts</h3>
+                            <p>Receive rule-based warnings, such as a recommendation to consult a doctor after three consecutive high readings.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">&#128196;</div>
+                            <h3>Reports & Export</h3>
+                            <p>Easily view all your historical readings in a clear table and download your complete data as a CSV file for your records or to share.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive Demo & Trends Section -->
+            <section id="demo">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Interactive Demo & Trend Analysis</h2>
+                        <p>Enter your readings below to see instant analysis and watch your health trends evolve.</p>
+                    </div>
+                    <div class="demo-container">
+                        <div class="form-container">
+                            <h3>Add New Reading</h3>
+                            <form id="bp-form">
+                                <div class="form-group">
+                                    <label for="systolic">Systolic (SBP) mm Hg</label>
+                                    <input type="number" id="systolic" required>
+                                    <div class="form-error" id="systolic-error"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diastolic">Diastolic (DBP) mm Hg</label>
+                                    <input type="number" id="diastolic" required>
+                                    <div class="form-error" id="diastolic-error"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart-rate">Heart Rate (BPM)</label>
+                                    <input type="number" id="heart-rate">
+                                    <div class="form-error" id="hr-error"></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">Analyze & Save</button>
+                            </form>
+                        </div>
+                        <div class="results-container">
+                            <h3>Your Latest Result</h3>
+                            <div id="result-card" class="result-card">
+                                <h3>Your Blood Pressure is</h3>
+                                <div id="result-category" class="result-category">Normal</div>
+                                <p id="result-details" class="result-details">SBP: 120 / DBP: 80</p>
+                                <div id="smart-alert" class="smart-alert"></div>
+                            </div>
+                            <p id="no-result-message">Your analysis will appear here once you submit a reading.</p>
+                            
+                            <h3>Your BP Trend</h3>
+                            <canvas id="bpChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer>
+                <div class="container">
+                    <h2>BP Guardian</h2>
+                    <p>Our mission is to empower individuals with the tools and insights needed for preventive healthcare, transforming data into actionable steps for a longer, healthier life.</p>
+                    <p>&copy; 2024 BP Guardian. All Rights Reserved.</p>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Insights Page -->
+        <section id="insights" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Lifestyle Insights</h2>
+                    <p>Small changes can make a big difference. Explore these tips for better blood pressure management.</p>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header">How to Measure BP Correctly <span class="accordion-icon">+</span></div>
+                        <div class="accordion-content">
+                            <p>Sit quietly for 5 minutes beforehand. Use a cuff that fits your arm. Rest your arm at heart level. Don't talk. Take two readings, 1 minute apart, and average them.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">Reduce Sodium Intake <span class="accordion-icon">+</span></div>
+                        <div class="accordion-content">
+                            <p>Aim for less than 2,300 milligrams (mg) a day. Avoid processed foods, canned soups, and fast food. Read labels to check sodium content and choose low-sodium options.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">Regular Physical Activity <span class="accordion-icon">+</span></div>
+                        <div class="accordion-content">
+                            <p>Aim for at least 30 minutes of moderate-intensity aerobic exercise most days of the week. This can include brisk walking, cycling, swimming, or dancing.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">Manage Stress Effectively <span class="accordion-icon">+</span></div>
+                        <div class="accordion-content">
+                            <p>Chronic stress can contribute to high blood pressure. Practice stress-reduction techniques like deep breathing, meditation, yoga, or spending time in nature.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Page -->
+        <section id="reports" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Your Health Reports</h2>
+                    <p>A complete history of your blood pressure readings.</p>
+                </div>
+                <div class="reports-table-container">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Systolic (SBP)</th>
+                                <th>Diastolic (DBP)</th>
+                                <th>Heart Rate</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reports-table-body">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="reports-actions">
+                    <button id="download-csv" class="btn btn-primary">Download CSV</button>
+                    <button id="clear-history" class="btn btn-secondary">Clear History</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="about" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>About BP Guardian</h2>
+                    <p>Our mission, vision, and the future of AI-powered preventive healthcare.</p>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item timeline-left">
+                        <div class="timeline-content">
+                            <h3>Phase 1: MVP Launch</h3>
+                            <p>Establish a robust, user-friendly platform for manual BP tracking and rule-based analysis, empowering users with initial insights.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item timeline-right">
+                        <div class="timeline-content">
+                            <h3>Phase 2: Wearable Integration</h3>
+                            <p>Seamlessly sync data from smartwatches and other health wearables for automated, continuous monitoring and richer data streams.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item timeline-left">
+                        <div class="timeline-content">
+                            <h3>Phase 3: Preventive AI Coaching</h3>
+                            <p>Introduce a true AI coach that provides personalized lifestyle recommendations based on long-term trend analysis and user data.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item timeline-right">
+                        <div class="timeline-content">
+                            <h3>Phase 4: Clinical Partnerships</h3>
+                            <p>Integrate with healthcare providers to allow users to securely share their data, facilitating better doctor-patient collaboration.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmation-modal">
+        <div class="modal-content">
+            <h3>Are you sure?</h3>
+            <p>This will permanently delete all your saved blood pressure readings. This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="confirm-delete-btn">Yes, Delete All</button>
+                <button class="btn btn-cancel" id="cancel-delete-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JavaScript Logic -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Global State & Elements ---
+        const LOCAL_STORAGE_KEY = 'bpGuardianReadings';
+        let readings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
+        let bpChart;
+
+        const bpForm = document.getElementById('bp-form');
+        const resultCard = document.getElementById('result-card');
+        const noResultMessage = document.getElementById('no-result-message');
+        
+        // --- Navigation ---
+        const navbar = document.getElementById('navbar');
+        const navLinksContainer = document.getElementById('nav-links');
+        const navLinks = document.querySelectorAll('.page-link');
+        const menuToggle = document.getElementById('menu-toggle');
+        const pages = document.querySelectorAll('.page');
+        const homepageContent = document.getElementById('homepage-content');
+
+        // Sticky Navbar
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile Menu Toggle
+        menuToggle.addEventListener('click', () => {
+            navLinksContainer.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+
+        // Single Page Application (SPA) Navigation Logic
+        const showPage = (targetId) => {
+            // Hide all pages and homepage content
+            pages.forEach(page => page.classList.remove('active'));
+            homepageContent.classList.remove('active');
+
+            // Update active link
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === targetId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Show the target content
+            if (targetId === '#home' || targetId === '#features' || targetId === '#demo') {
+                homepageContent.classList.add('active');
+                // For internal homepage links, we just scroll
+                const element = document.querySelector(targetId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                const targetPage = document.querySelector(targetId);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                    window.scrollTo(0, 0); // Scroll to top of new page
+                }
+            }
+            
+            // Close mobile menu after navigation
+            navLinksContainer.classList.remove('active');
+            menuToggle.classList.remove('active');
+        };
+
+        navLinksContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' && e.target.classList.contains('page-link')) {
+                e.preventDefault();
+                const targetId = e.target.getAttribute('href');
+                showPage(targetId);
+                
+                // Special handling for home link to show homepage content
+                if(targetId === '#home') {
+                    homepageContent.classList.add('active');
+                    pages.forEach(p => p.classList.remove('active'));
+                }
+            }
+        });
+
+
+        // --- Blood Pressure Logic ---
+        const classifyBP = (sbp, dbp) => {
+            if (sbp >= 180 || dbp >= 120) return { category: 'Hypertensive Crisis', color: '#c0392b' };
+            if (sbp >= 140 || dbp >= 90) return { category: 'High BP (Stage 2)', color: '#e74c3c' };
+            if (sbp >= 130 || dbp >= 80) return { category: 'High BP (Stage 1)', color: '#f39c12' };
+            if (sbp >= 120 && dbp < 80) return { category: 'Elevated', color: '#f1c40f' };
+            if (sbp < 120 && dbp < 80) return { category: 'Normal', color: '#2ecc71' };
+            return { category: 'Undefined', color: '#95a5a6' };
+        };
+
+        const validateInput = (value, min, max, errorElId) => {
+            const errorEl = document.getElementById(errorElId);
+            if (value === '' || isNaN(value)) {
+                errorEl.textContent = 'Please enter a valid number.';
+                errorEl.style.display = 'block';
+                return false;
+            }
+            if (value < min || value > max) {
+                errorEl.textContent = `Value must be between ${min} and ${max}.`;
+                errorEl.style.display = 'block';
+                return false;
+            }
+            errorEl.style.display = 'none';
+            return true;
+        };
+
+        bpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const sbpInput = document.getElementById('systolic');
+            const dbpInput = document.getElementById('diastolic');
+            const hrInput = document.getElementById('heart-rate');
+
+            const sbp = parseInt(sbpInput.value, 10);
+            const dbp = parseInt(dbpInput.value, 10);
+            const hr = hrInput.value ? parseInt(hrInput.value, 10) : null;
+
+            const isSbpValid = validateInput(sbp, 50, 300, 'systolic-error');
+            const isDbpValid = validateInput(dbp, 30, 200, 'diastolic-error');
+            const isHrValid = hr === null || validateInput(hr, 30, 220, 'hr-error');
+
+            if (!isSbpValid || !isDbpValid || !isHrValid) return;
+
+            const classification = classifyBP(sbp, dbp);
+            const newReading = {
+                sbp,
+                dbp,
+                hr,
+                timestamp: new Date().toISOString(),
+                category: classification.category
+            };
+
+            readings.push(newReading);
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(readings));
+
+            updateResultCard(newReading, classification);
+            updateChart();
+            checkSmartAlerts();
+
+            bpForm.reset();
+        });
+
+        const updateResultCard = (reading, classification) => {
+            document.getElementById('result-category').textContent = classification.category;
+            document.getElementById('result-category').style.color = classification.color;
+            document.getElementById('result-details').textContent = `SBP: ${reading.sbp} / DBP: ${reading.dbp}`;
+            resultCard.style.display = 'block';
+            noResultMessage.style.display = 'none';
+        };
+        
+        const checkSmartAlerts = () => {
+            const smartAlertEl = document.getElementById('smart-alert');
+            if (readings.length < 3) {
+                smartAlertEl.style.display = 'none';
+                return;
+            }
+            
+            const lastThree = readings.slice(-3);
+            const allHigh = lastThree.every(r => r.category.includes('High BP') || r.category.includes('Crisis'));
+            
+            if (allHigh) {
+                smartAlertEl.textContent = 'Warning: Three consecutive high readings detected. We recommend consulting a healthcare professional.';
+                smartAlertEl.style.display = 'block';
+            } else {
+                smartAlertEl.style.display = 'none';
+            }
+        };
+
+        // --- Chart Logic ---
+        const initChart = () => {
+            const ctx = document.getElementById('bpChart').getContext('2d');
+            bpChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Systolic (SBP)',
+                            data: [],
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Diastolic (DBP)',
+                            data: [],
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            suggestedMin: 50,
+                            suggestedMax: 160
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuad'
+                    }
+                }
+            });
+        };
+        
+        // Simple Chart.js-like implementation for canvas
+        const Chart = function(context, config) {
+            this.ctx = context;
+            this.config = config;
+            this.draw();
+
+            return {
+                data: config.data,
+                update: () => this.draw()
+            };
+        };
+
+        Chart.prototype.draw = function() {
+            const ctx = this.ctx;
+            const canvas = ctx.canvas;
+            const { width, height } = canvas;
+            ctx.clearRect(0, 0, width, height);
+
+            const data = this.config.data;
+            const options = this.config.options;
+            const padding = 50;
+            
+            if (data.labels.length === 0) {
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#999';
+                ctx.font = '16px ' + document.body.style.fontFamily;
+                ctx.fillText('No data to display', width / 2, height / 2);
+                ctx.restore();
+                return;
+            }
+
+            const allDataPoints = data.datasets.flatMap(ds => ds.data);
+            const dataMin = Math.min(...allDataPoints, options.scales.y.suggestedMin || 0);
+            const dataMax = Math.max(...allDataPoints, options.scales.y.suggestedMax || 100);
+            const yRange = dataMax - dataMin;
+            
+            const xStep = (width - padding * 2) / (data.labels.length - 1 || 1);
+            
+            // Draw Y-axis labels and grid lines
+            ctx.save();
+            ctx.strokeStyle = '#eee';
+            ctx.fillStyle = '#666';
+            ctx.font = '12px ' + document.body.style.fontFamily;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i <= 5; i++) {
+                const value = Math.round(dataMin + (yRange / 5) * i);
+                const y = height - padding - ((value - dataMin) / yRange) * (height - padding * 2);
+                ctx.fillText(value, padding - 10, y);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // Draw X-axis labels
+            ctx.save();
+            ctx.fillStyle = '#666';
+            ctx.font = '12px ' + document.body.style.fontFamily;
+            ctx.textAlign = 'center';
+            data.labels.forEach((label, i) => {
+                const x = padding + i * xStep;
+                ctx.fillText(label, x, height - padding + 20);
+            });
+            ctx.restore();
+
+            // Draw lines
+            data.datasets.forEach(dataset => {
+                ctx.save();
+                ctx.strokeStyle = dataset.borderColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                dataset.data.forEach((point, i) => {
+                    const x = padding + i * xStep;
+                    const y = height - padding - ((point - dataMin) / yRange) * (height - padding * 2);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+                ctx.restore();
+            });
+        };
+
+        const updateChart = () => {
+            const labels = readings.map(r => new Date(r.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            const sbpData = readings.map(r => r.sbp);
+            const dbpData = readings.map(r => r.dbp);
+
+            bpChart.data.labels = labels;
+            bpChart.data.datasets[0].data = sbpData;
+            bpChart.data.datasets[1].data = dbpData;
+            bpChart.update();
+        };
+
+        // --- Accordion Logic ---
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        accordionItems.forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            header.addEventListener('click', () => {
+                const currentlyActive = document.querySelector('.accordion-item.active');
+                if (currentlyActive && currentlyActive !== item) {
+                    currentlyActive.classList.remove('active');
+                }
+                item.classList.toggle('active');
+            });
+        });
+
+        // --- Reports Page Logic ---
+        const populateReportsTable = () => {
+            const tableBody = document.getElementById('reports-table-body');
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = ''; // Clear existing rows
+            if (readings.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No readings recorded yet.</td></tr>';
+                return;
+            }
+            
+            const reversedReadings = [...readings].reverse();
+            reversedReadings.forEach(r => {
+                const row = document.createElement('tr');
+                const formattedDate = new Date(r.timestamp).toLocaleString();
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${r.sbp}</td>
+                    <td>${r.dbp}</td>
+                    <td>${r.hr || 'N/A'}</td>
+                    <td>${r.category}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        };
+
+        document.getElementById('download-csv').addEventListener('click', () => {
+            if (readings.length === 0) {
+                alert('No data to download.');
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Timestamp,Systolic (SBP),Diastolic (DBP),Heart Rate (BPM),Category\r\n";
+            readings.forEach(r => {
+                const row = [r.timestamp, r.sbp, r.dbp, r.hr || '', r.category].join(",");
+                csvContent += row + "\r\n";
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "bp_guardian_report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+        
+        // Modal logic
+        const modal = document.getElementById('confirmation-modal');
+        document.getElementById('clear-history').addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+        document.getElementById('cancel-delete-btn').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+            readings = [];
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+            populateReportsTable();
+            updateChart();
+            modal.style.display = 'none';
+        });
+
+
+        // --- Initial Load ---
+        const init = () => {
+            initChart();
+            updateChart();
+            populateReportsTable();
+            if (readings.length > 0) {
+                const lastReading = readings[readings.length - 1];
+                const classification = classifyBP(lastReading.sbp, lastReading.dbp);
+                updateResultCard(lastReading, classification);
+                checkSmartAlerts();
+            }
+            // Add listener to update reports table when page is shown
+            new MutationObserver(() => {
+                if(document.getElementById('reports').classList.contains('active')) {
+                    populateReportsTable();
+                }
+            }).observe(document.getElementById('main-content'), { subtree: true, attributes: true, attributeFilter: ['class'] });
+        };
+
+        init();
+    });
+    </script>
+</body>
+</html>
